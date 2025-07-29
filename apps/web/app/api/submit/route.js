@@ -112,16 +112,24 @@ export async function POST(req) {
       console.log(`Dispatching to Judge0 with callback: ${callbackUrl}`);
       
       // Return the axios post promise
-      return axios.post(
-        `${process.env.JUDGE0_URL}/submissions?base64_encoded=false&wait=true`,
-        {
-          source_code: finalCode, // CHANGED: This now sends the merged code
-          language_id: parseInt(54),
-          stdin: testCase.input,
-          expected_output: testCase.output,
-          callback_url: callbackUrl,
-        }
-      );
+     return axios.post(
+  `${process.env.JUDGE0_URL}/submissions?base64_encoded=false&wait=false`,
+  {
+    source_code: finalCode,
+    language_id: parseInt(54), // use dynamic language
+    stdin: testCase.input,
+    expected_output: testCase.output,
+    callback_url: callbackUrl,
+  },
+  {
+    headers: {
+      'Content-Type': 'application/json',
+      'x-rapidapi-host': process.env.JUDGE0_HOST,
+      'x-rapidapi-key': process.env.JUDGE0_KEY,
+    },
+  }
+);
+
     });
 
     // 3. Dispatch all jobs to Judge0 without waiting for them to complete
