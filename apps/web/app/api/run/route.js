@@ -44,19 +44,25 @@ async function getTestCasesFromS3(slug) {
 
 export async function POST(req) {
   try {
+    console.log("[Run API] Received POST /api/run request");
     // --- Parse and validate request ---
     const body = await req.json();
+    console.log("[Run API] Request body:", body);
     const parsedBody = runSchema.safeParse(body);
     if (!parsedBody.success) {
+      console.warn("[Run API] Invalid request body:", parsedBody.error);
       return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
     }
     const { userId, problemSlug, languageId, code } = parsedBody.data;
 
     // --- Fetch problem and boilerplate ---
+    console.log(`[Run API] Fetching problem for slug: ${problemSlug}`);
     const problem = await prisma.problem.findUnique({ where: { slug: problemSlug } });
     if (!problem) {
+      console.warn(`[Run API] Problem not found for slug: ${problemSlug}`);
       return NextResponse.json({ error: 'Problem not found' }, { status: 404 });
     }
+    console.log(`[Run API] Fetching boilerplate for problemId: ${problem.id}, languageId: ${languageId}`);
     const boilerplate = await prisma.problemBoilerplate.findFirst({
       where: { problemId: problem.id, languageId },
     });
@@ -66,15 +72,20 @@ export async function POST(req) {
     }
     const finalCode = boilerplate.fullcode.replace(boilerplate.code, code);
     console.log(`[Run API] Using boilerplate for language ID ${languageId}`);
+    console.log(`[Run API] Final code: ${finalCode}`);
 
     // --- Fetch sample test cases ---
+    console.log(`[Run API] Fetching test cases for problemSlug: ${problemSlug}`);
     const allTestCases = await getTestCasesFromS3(problemSlug);
     const sampleTestCases = allTestCases.slice(0, 1);
+    console.log(`[Run API] Sample test cases count: ${sampleTestCases.length}`);
     if (sampleTestCases.length === 0) {
+      console.warn(`[Run API] No sample test cases found for problemSlug: ${problemSlug}`);
       return NextResponse.json({ error: 'No sample test cases found' }, { status: 404 });
     }
 
     // --- Create a temporary Submission record ---
+    console.log(`[Run API] Creating submission record for userId: ${userId}, problemId: ${problem.id}, languageId: ${languageId}`);
     const runSession = await prisma.submission.create({
       data: {
         userId,
@@ -85,11 +96,13 @@ export async function POST(req) {
         token: `run-${Date.now()}`,
       },
     });
+    console.log(`[Run API] Created submission with id: ${runSession.id}`);
 
     // --- Create submissionTestCaseResults records and prepare test case map ---
     const testCaseMap = [];
     const judge0Promises = [];
     for (const testCase of sampleTestCases) {
+      console.log(`[Run API] Creating submissionTestCaseResults for submissionId: ${runSession.id}`);
       const resultRecord = await prisma.submissionTestCaseResults.create({
         data: {
           submissionId: runSession.id,
@@ -104,12 +117,14 @@ export async function POST(req) {
           memory: null,
         },
       });
+      console.log(`[Run API] Created submissionTestCaseResults with id: ${resultRecord.id}`);
       testCaseMap.push({
         submissionTestCaseResultsId: resultRecord.id,
         input: testCase.input,
         output: testCase.output,
       });
       const callbackUrl = `${process.env.WEBHOOK_URL}?submissionTestCaseResultsId=${resultRecord.id}`;
+      console.log(`[Run API] Dispatching to Judge0 for submissionTestCaseResultsId: ${resultRecord.id}`);
       judge0Promises.push(
         axios.post(
           `${process.env.JUDGE0_URL}/submissions?base64_encoded=false&wait=false`,
@@ -132,9 +147,12 @@ export async function POST(req) {
     }
 
     // --- Dispatch all jobs to Judge0 ---
-    Promise.all(judge0Promises).catch(err => console.error("[Run API] Error dispatching to Judge0:", err));
+    Promise.all(judge0Promises)
+      .then(() => console.log("[Run API] All Judge0 jobs dispatched successfully."))
+      .catch(err => console.error("[Run API] Error dispatching to Judge0:", err));
 
     // --- Return runId and test case map ---
+    console.log(`[Run API] Returning runId: ${runSession.id} and ${testCaseMap.length} test cases`);
     return NextResponse.json({
       runId: runSession.id,
       testCases: testCaseMap,

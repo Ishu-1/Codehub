@@ -102,37 +102,38 @@ function generateBoilerplate(parsed) {
   return code.trim();
 }
 
-function generateInputCode(input, knownSizes = {}) {
-  const type = mapType(input.type);
-  const name = input.name;
 
-  if (["int", "str", "bool", "float"].includes(type)) {
-    return `    ${name} = ${type}(input())`;
+// Generate input code for all arguments at once (space-separated)
+function generateInputsBlock(inputs) {
+  if (inputs.length === 0) return "";
+  // Check if all are primitive and of the same type
+  const primitives = ["int", "str", "bool", "float"];
+  const mappedTypes = inputs.map(inp => mapType(inp.type));
+  const allPrimitive = mappedTypes.every(t => primitives.includes(t));
+  const allSameType = new Set(mappedTypes).size === 1;
+  if (allPrimitive && allSameType && inputs.length > 1) {
+    // e.g. a, b = map(int, input().split())
+    return `    ${inputs.map(i => i.name).join(", ")} = map(${mappedTypes[0]}, input().split())`;
   }
-
-  if (type.startsWith("List[List[")) {
-    const sizeVars = Object.keys(knownSizes);
-    const [rowsVar, colsVar] = sizeVars.slice(-2);
-    const inner = type.match(/List\[List\[(.*?)\]\]/)?.[1];
-
-    if (!rowsVar || !colsVar || !["int", "str", "bool", "float"].includes(inner)) {
-      return `    ${name} = input()  # TODO: Parse as ${type}`;
+  // Fallback: one per line
+  return inputs.map(inp => {
+    const type = mapType(inp.type);
+    const name = inp.name;
+    if (primitives.includes(type)) {
+      return `    ${name} = ${type}(input())`;
     }
-
-    return `    ${name} = [[${inner}(x) for x in input().split()] for _ in range(${rowsVar})]`;
-  }
-
-  if (type.startsWith("List[")) {
-    const inner = type.match(/List\[(.*?)\]/)?.[1];
-
-    if (!["int", "str", "bool", "float"].includes(inner)) {
-      return `    ${name} = input()  # TODO: Parse as ${type}`;
+    if (type.startsWith("List[List[")) {
+      return `    # TODO: Parse ${name} as ${type}`;
     }
-
-    return `    ${name} = list(map(${inner}, input().split()))`;
-  }
-
-  return `    ${name} = input()  # TODO: Parse as ${type}`;
+    if (type.startsWith("List[")) {
+      const inner = type.match(/List\[(.*?)\]/)?.[1];
+      if (primitives.includes(inner)) {
+        return `    ${name} = list(map(${inner}, input().split()))`;
+      }
+      return `    # TODO: Parse ${name} as ${type}`;
+    }
+    return `    ${name} = input()  # TODO: Parse as ${type}`;
+  }).join("\n");
 }
 
 function generateOutputCode(outputType) {
@@ -148,6 +149,7 @@ function generateOutputCode(outputType) {
   }
 }
 
+
 function generateFullBoilerplate(parsed) {
   let code = "# Imports\n";
   code += "import sys\n\n";
@@ -155,23 +157,19 @@ function generateFullBoilerplate(parsed) {
   code += "if __name__ == '__main__':\n";
   let mainFunc = parsed.functions[0] || (parsed.classes[0]?.methods[0]);
   if (mainFunc) {
-    let knownSizes = {};
-    mainFunc.inputs.forEach(inp => {
-      code += generateInputCode(inp, knownSizes) + "\n";
-      const type = mapType(inp.type);
-      if (type === 'int') knownSizes[inp.name] = true;
-    });
+    // Generate all input code at once for primitives
+    code += generateInputsBlock(mainFunc.inputs) + "\n";
     let call;
     if (parsed.functions[0]) {
       call = `${mainFunc.name}(${mainFunc.inputs.map(inp => inp.name).join(", ")})`;
-    } else {
-      call = `obj = ${parsed.classes[0].name}()\n    result = obj.${mainFunc.name}(${mainFunc.inputs.map(inp => inp.name).join(", ")})`;
-      code += `    ${call}\n`;
+      code += `    result = ${call}\n`;
       code += generateOutputCode(mainFunc.outputType) + "\n";
-      return code;
+    } else {
+      code += `    obj = ${parsed.classes[0].name}()\n`;
+      call = `obj.${mainFunc.name}(${mainFunc.inputs.map(inp => inp.name).join(", ")})`;
+      code += `    result = ${call}\n`;
+      code += generateOutputCode(mainFunc.outputType) + "\n";
     }
-    code += `    result = ${call}\n`;
-    code += generateOutputCode(mainFunc.outputType) + "\n";
   }
   return code;
 }
