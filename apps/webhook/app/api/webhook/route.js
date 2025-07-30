@@ -1,4 +1,8 @@
-// Express-compatible webhook route handler
+/**
+ * @fileoverview Express-compatible webhook route handler for Judge0 callbacks.
+ * Handles PUT requests to /webhook?submissionTestCaseResultsId=...
+ * Updates the test case result in the database based on Judge0 status.
+ */
 
 import express from "express";
 import { z } from "zod";
@@ -15,40 +19,41 @@ const judge0CallbackSchema = z.object({
   token: z.string(),
 });
 
-// POST /webhook?submissionTestCaseResultsId=...
+// PUT /webhook?submissionTestCaseResultsId=...
 router.put("/", async (req, res) => {
   const submissionTestCaseResultsId = req.query.submissionTestCaseResultsId;
 
   if (!submissionTestCaseResultsId) {
-    console.error("Missing submissionTestCaseResultsId");
+    console.error("[Webhook] Missing submissionTestCaseResultsId");
     return res.status(400).json({ error: "Missing submissionTestCaseResultsId" });
   }
 
-  const numericId = parseInt(submissionTestCaseResultsId);
+  const numericId = parseInt(submissionTestCaseResultsId, 10);
   if (isNaN(numericId)) {
-    console.error("Invalid ID format:", submissionTestCaseResultsId);
+    console.error("[Webhook] Invalid ID format:", submissionTestCaseResultsId);
     return res.status(400).json({ error: "Invalid ID format" });
   }
 
   try {
     const parsed = judge0CallbackSchema.safeParse(req.body);
     if (!parsed.success) {
-      console.error("Invalid Judge0 body:", parsed.error);
+      console.error("[Webhook] Invalid Judge0 body:", parsed.error);
       return res.status(400).json({ error: "Invalid callback body" });
     }
 
     const { status } = parsed.data;
-    const passed = (status.id === 3) ? parseInt(1) : parseInt(0); // Assuming 3 means "Accepted", otherwise "Wrong Answer"
+    // 3 = Accepted, anything else = Wrong Answer
+    const passed = status.id === 3 ? 1 : 0;
 
     await prisma.submissionTestCaseResults.update({
       where: { id: numericId },
       data: { passed },
     });
 
-    console.log(`Webhook processed: ID ${numericId}, Result: ${passed}`);
+    console.log(`[Webhook] Processed: ID ${numericId}, Result: ${passed === 1 ? "Accepted" : "Wrong Answer"}`);
     return res.status(200).json({ message: "Webhook received successfully." });
   } catch (error) {
-    console.error("Internal server error:", error);
+    console.error("[Webhook] Internal server error:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 });

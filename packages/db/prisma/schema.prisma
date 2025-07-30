@@ -15,10 +15,10 @@ enum Difficulty {
 
 model User {
   id           String         @id 
-  username     String?       @unique @default("temp_username") // Temporary default
+  username     String?       @unique @default("anonymous_username")
   email        String       @unique
-  //passwordHash String       @default("temp_password")         // Temporary default
   createdAt    DateTime     @default(now())
+  
   submissions  Submission[]
 }
 
@@ -35,11 +35,9 @@ model Problem {
   sampleOutput String
   difficulty   Difficulty
   createdAt    DateTime     @default(now())
-  // testCases    String?      // JSON string for test cases, if needed
-  // testCases    TestCase[]
+
   submissions  Submission[]
   tags         ProblemTag[]
-
   boilerplates ProblemBoilerplate[]
 }
 
@@ -53,24 +51,13 @@ model ProblemBoilerplate {
   problem    Problem  @relation(fields: [problemId], references: [id])
   language   Language @relation(fields: [languageId], references: [id])
 
-  @@unique([problemId, languageId]) // Ensure only one boilerplate per language per problem
+  @@unique([problemId, languageId])
 }
-
-
-// model TestCase {
-//   id             Int       @id @default(autoincrement())
-//   problemId      Int
-//   inputUrl       String    // S3 URL for input
-//   outputUrl      String    // S3 URL for expected output
-//   isSample       Boolean   @default(false)
-
-//   problem        Problem   @relation(fields: [problemId], references: [id])
-//   results        submissionTestCaseResults[]
-// }
 
 model Tag {
   id        Int          @id @default(autoincrement())
   name      String       @unique
+
   problems  ProblemTag[]
 }
 
@@ -118,38 +105,10 @@ model Submission {
   results        submissionTestCaseResults[]
 }
 
-// model submissionTestCaseResults {
-//   id           Int       @id @default(autoincrement())
-//   submissionId Int
-//   // testCaseId   Int
-//   passed String // -1 for processing, 0 for failed, 1 for passed
-
-//   submission   Submission @relation(fields: [submissionId], references: [id])
-//   // testCase     TestCase   @relation(fields: [testCaseId], references: [id])
-
-//   // @@unique([submissionId])
-// }
-
-// model submissionTestCaseResultss {
-//   id           Int       @id @default(autoincrement())
-//   submissionId Int
-//   // testCaseId   Int
-//   passed Int // -1 for processing, 0 for failed, 1 for passed
-
-//   submission   Submission @relation(fields: [submissionId], references: [id])
-//   // testCase     TestCase   @relation(fields: [testCaseId], references: [id])
-
-//   // @@unique([submissionId])
-// }
-
 model submissionTestCaseResults {
   id           Int       @id @default(autoincrement())
   submissionId Int
-  // testCaseId   Int
   passed Int // -1 for processing, 0 for failed, 1 for passed
 
   submission   Submission @relation(fields: [submissionId], references: [id])
-  // testCase     TestCase   @relation(fields: [testCaseId], references: [id])
-
-  // @@unique([submissionId])
 }

@@ -1,10 +1,16 @@
+/**
+ * @fileoverview Entry point for the webhook server.
+ * Starts an Express server to handle Judge0 webhook callbacks.
+ * All webhooks should POST to /webhook?submissionTestCaseResultsId=...
+ */
+
 import express from "express";
 import webhookRoute from "./app/api/webhook/route.js"; // Express-compatible router
 
 const app = express();
 app.use(express.json());
 
-// All Judge0 webhooks should POST to /webhook?submissionTestCaseResultsId=...
+// Route for handling Judge0 webhooks
 app.use("/webhook", webhookRoute);
 
 const PORT = process.env.PORT || 5000;

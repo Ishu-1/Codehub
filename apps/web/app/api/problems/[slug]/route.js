@@ -1,25 +1,30 @@
-// apps/web/app/api/problems/[slug]/route.js
-//
-// This API endpoint fetches the complete details for a single problem,
-// identified by its unique slug.
+/**
+ * @fileoverview API endpoint to fetch the complete details for a single problem.
+ * Route: /api/problems/[slug]
+ * Method: GET
+ * 
+ * Returns the full details for a problem identified by its unique slug,
+ * including boilerplate code for each language.
+ */
 
 import { NextResponse } from 'next/server';
 import prisma from "@repo/db/client";
 
-export async function GET(req, { params }) {
+/**
+ * GET /api/problems/[slug]
+ * Fetches a single problem by slug, including all relevant details.
+ */
+export async function GET(req, context) {
   try {
-    const { slug } = params;
+    const { slug } = await context.params;
 
     if (!slug) {
+      console.warn('[GET] /api/problems/[slug] - Missing slug parameter');
       return NextResponse.json({ error: 'Problem slug is required' }, { status: 400 });
     }
 
-    // 1. Find the unique problem by its slug
     const problem = await prisma.problem.findUnique({
-      where: {
-        slug: slug,
-      },
-      // 2. Include all relevant details for the problem page
+      where: { slug },
       select: {
         id: true,
         title: true,
@@ -28,7 +33,6 @@ export async function GET(req, { params }) {
         outputFormat: true,
         constraints: true,
         difficulty: true,
-        // 3. Also include the boilerplate code for each language
         boilerplates: {
           select: {
             id: true,
@@ -46,15 +50,16 @@ export async function GET(req, { params }) {
       }
     });
 
-    // 4. If no problem is found, return a 404 error
     if (!problem) {
+      console.warn(`[GET] /api/problems/[slug] - Problem not found for slug: ${slug}`);
       return NextResponse.json({ error: 'Problem not found' }, { status: 404 });
     }
 
+    console.log(`[GET] /api/problems/[slug] - Returned problem with slug: ${slug}`);
     return NextResponse.json(problem, { status: 200 });
 
   } catch (error) {
-    console.error(`Failed to fetch problem ${params.slug}:`, error);
+    console.error('[GET] /api/problems/[slug] - Error:', error);
     return NextResponse.json({ error: 'An internal server error occurred.' }, { status: 500 });
   }
 }
