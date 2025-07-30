@@ -2,8 +2,9 @@
 /**
  * ProblemSolvePage - A modern, professional UI for solving coding problems.
  *
- * v4: Fixed a bug where `userId` was not being sent in the `handleRun` function.
- * - Added `userId` to the payload for the `/api/run` POST request.
+ * v5: Themed and fixed navbar overlap.
+ * - Updated UI to match the "dim" slate and indigo theme.
+ * - Added top padding to the main container to prevent overlap with the fixed navbar.
  */
 
 import { useEffect, useState, useRef } from "react";
@@ -40,6 +41,7 @@ function TestCaseResult({ testCase, result }) {
   const statusInfo = result ? (statusMap[result.statusId] || { text: result.statusDescription, ...defaultStatus }) : null;
 
   return (
+    // ✨ THEME: Updated card styles
     <div className="bg-slate-800/50 rounded-lg border border-slate-700 mb-3">
       <button onClick={() => setIsOpen(!isOpen)} className="w-full flex justify-between items-center p-4 text-left">
         <div className="flex items-center gap-3">
@@ -56,16 +58,17 @@ function TestCaseResult({ testCase, result }) {
         <div className="p-5 border-t border-slate-700 bg-slate-900/50">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
             {testCase.input && <div>
-              <h4 className="text-[#FF6500] font-semibold mb-2">Input</h4>
+              {/* ✨ THEME: Updated text color */}
+              <h4 className="text-indigo-400 font-semibold mb-2">Input</h4>
               <pre className="text-slate-300 whitespace-pre-wrap bg-slate-800 p-3 rounded">{testCase.input}</pre>
             </div>}
             {testCase.output && <div>
-              <h4 className="text-[#FF6500] font-semibold mb-2">Expected Output</h4>
+              <h4 className="text-indigo-400 font-semibold mb-2">Expected Output</h4>
               <pre className="text-slate-300 whitespace-pre-wrap bg-slate-800 p-3 rounded">{testCase.output}</pre>
             </div>}
             {result?.stdout && (
               <div className="md:col-span-2">
-                <h4 className="text-[#FF6500] font-semibold mb-2">Your Output</h4>
+                <h4 className="text-indigo-400 font-semibold mb-2">Your Output</h4>
                 <pre className="text-slate-300 whitespace-pre-wrap bg-slate-800 p-3 rounded">{decodeBase64(result.stdout)}</pre>
               </div>
             )}
@@ -83,7 +86,7 @@ function TestCaseResult({ testCase, result }) {
             )}
              {result?.message && (
                 <div className="md:col-span-2">
-                    <h4 className="text-[#FF6500] font-semibold mb-2">Message</h4>
+                    <h4 className="text-indigo-400 font-semibold mb-2">Message</h4>
                     <pre className="text-slate-300 whitespace-pre-wrap bg-slate-800 p-3 rounded">{decodeBase64(result.message)}</pre>
                 </div>
             )}
@@ -197,9 +200,8 @@ export default function ProblemSolvePage() {
 
     try {
         const langBoiler = problem.boilerplates.find(b => b.language.id === selectedLang.id);
-        // ✨ FIX: Added userId to the request payload to match the backend schema.
         const res = await axios.post("/api/run", { 
-            userId: "1", // Assuming a hardcoded user for now, as in handleSubmit
+            userId: "1", 
             problemSlug: problemId, 
             languageId: langBoiler.language.id, 
             code 
@@ -232,20 +234,25 @@ export default function ProblemSolvePage() {
   };
 
   // --- Main Render ---
-  if (loading) return <div className="flex items-center justify-center min-h-screen bg-[#0a192f] text-white"><Loader className="w-10 h-10 animate-spin" /></div>;
-  if (error) return <div className="flex items-center justify-center min-h-screen bg-[#0a192f] text-red-500">{error}</div>;
+  if (loading) return <div className="flex items-center justify-center min-h-screen bg-slate-900 text-white"><Loader className="w-10 h-10 animate-spin" /></div>;
+  if (error) return <div className="flex items-center justify-center min-h-screen bg-slate-900 text-red-500">{error}</div>;
 
   return (
-    <div className="min-h-screen bg-[#0a192f] text-slate-300">
-      <PanelGroup direction="horizontal">
+    // ✨ FIX: Main container with padding-top to prevent navbar overlap
+    <div className="h-screen bg-slate-900 text-slate-300 pt-24">
+      {/* The PanelGroup will now fill the remaining height */}
+      <PanelGroup direction="horizontal" className="h-full">
         {/* Left Panel: Problem Description */}
         <Panel defaultSize={50} minSize={30}>
-          <div className="p-8 overflow-y-auto h-screen">
-            <h1 className="text-3xl font-bold text-slate-100 mb-2">{problem.title}</h1>
+          {/* ✨ THEME: Updated background and padding */}
+          <div className="p-8 overflow-y-auto h-full bg-slate-900">
+            <h1 className="text-3xl font-bold text-slate-50 mb-2">{problem.title}</h1>
             <div className="flex gap-2 mb-8">
-              <span className={`px-3 py-1 rounded-full text-xs font-bold ${problem.difficulty === "EASY" ? "bg-green-500/20 text-green-400" : problem.difficulty === "MEDIUM" ? "bg-yellow-500/20 text-yellow-400" : "bg-red-500/20 text-red-400"}`}>{problem.difficulty}</span>
+              {/* ✨ THEME: Updated difficulty badges */}
+              <span className={`px-3 py-1 rounded-full text-xs font-bold ${problem.difficulty === "EASY" ? "bg-green-600/10 text-green-400" : problem.difficulty === "MEDIUM" ? "bg-yellow-600/10 text-yellow-400" : "bg-red-600/10 text-red-400"}`}>{problem.difficulty}</span>
             </div>
-            <div className="prose prose-invert prose-p:text-slate-300 prose-p:leading-relaxed prose-headings:text-slate-100 prose-headings:mb-4 prose-headings:mt-8 prose-strong:text-[#FF6500] prose-pre:bg-slate-800/70 prose-pre:p-4 prose-pre:rounded-md">
+            {/* ✨ THEME: Updated prose styles */}
+            <div className="prose prose-invert prose-p:text-slate-300 prose-p:leading-relaxed prose-headings:text-slate-50 prose-headings:mb-4 prose-headings:mt-8 prose-strong:text-indigo-400 prose-pre:bg-slate-800/70 prose-pre:p-4 prose-pre:rounded-md">
                 <p>{problem.description}</p>
                 <h3>Input Format</h3>
                 <p>{problem.inputFormat}</p>
@@ -257,7 +264,8 @@ export default function ProblemSolvePage() {
           </div>
         </Panel>
         
-        <PanelResizeHandle className="w-2.5 bg-slate-800 data-[resize-handle-state=hover]:bg-[#FF6500] data-[resize-handle-state=drag]:bg-[#FF6500] transition-colors duration-200" />
+        {/* ✨ THEME: Updated resize handle */}
+        <PanelResizeHandle className="w-2.5 bg-slate-800 data-[resize-handle-state=hover]:bg-indigo-500 data-[resize-handle-state=drag]:bg-indigo-500 transition-colors duration-200" />
 
         {/* Right Panel: Editor and Console */}
         <Panel defaultSize={50} minSize={30}>
@@ -274,7 +282,7 @@ export default function ProblemSolvePage() {
                 />
               </div>
             </Panel>
-            <PanelResizeHandle className="h-2.5 bg-slate-800 data-[resize-handle-state=hover]:bg-[#FF6500] data-[resize-handle-state=drag]:bg-[#FF6500] transition-colors duration-200" />
+            <PanelResizeHandle className="h-2.5 bg-slate-800 data-[resize-handle-state=hover]:bg-indigo-500 data-[resize-handle-state=drag]:bg-indigo-500 transition-colors duration-200" />
             <Panel defaultSize={35} minSize={15}>
                 <div className="h-full flex flex-col bg-slate-900/70">
                     <div className="flex items-center justify-between p-3 bg-slate-900 border-b border-slate-700">
@@ -289,7 +297,7 @@ export default function ProblemSolvePage() {
                                 {isRunning && <Loader className="w-4 h-4 animate-spin" />}
                                 {isRunning ? "Running..." : "Run Code"}
                             </button>
-                            <button onClick={handleSubmit} disabled={isSubmitting || isRunning} className="flex items-center gap-2 bg-[#FF6500] text-white px-4 py-1.5 rounded-md font-bold hover:bg-orange-600 transition disabled:opacity-60 disabled:cursor-not-allowed">
+                            <button onClick={handleSubmit} disabled={isSubmitting || isRunning} className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-1.5 rounded-md font-bold hover:bg-indigo-500 transition disabled:opacity-60 disabled:cursor-not-allowed">
                                 {isSubmitting && <Loader className="w-4 h-4 animate-spin" />}
                                 {isSubmitting ? "Submitting..." : "Submit"}
                             </button>
@@ -308,7 +316,7 @@ export default function ProblemSolvePage() {
                             {runResult.error && <p className="text-red-400">{runResult.error}</p>}
                             {runTestCases?.map(tc => {
                                const resultForCase = runResult.results?.find(r => r.id === tc.submissionTestCaseResultsId);
-                               return <TestCaseResult key={tc.id} testCase={{...tc, isSample: true}} result={resultForCase} />
+                               return <TestCaseResult key={tc.submissionTestCaseResultsId} testCase={{...tc, isSample: true}} result={resultForCase} />
                             })}
                            </div>
                         )}
