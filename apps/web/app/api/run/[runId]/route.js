@@ -1,66 +1,87 @@
-// apps/web/app/api/run/[runId]/route.js
-//
-// This is the simplified polling endpoint for the "Run" feature.
-// It returns the results and cleans up the database entry upon completion.
+/**
+ * @fileoverview Polling endpoint for the "Run" feature.
+ * Returns detailed Judge0 results for each test case in a run session.
+ *
+ * Route: /api/run/[runId]
+ * Method: GET
+ *
+ * - Returns all Judge0 fields for each test case
+ * - Returns status: 'Processing' or 'Completed'
+ * - (Optional) Cleans up the run session after completion
+ */
 
 import { NextResponse } from 'next/server';
 import prisma from "@repo/db/client";
 
 export async function GET(req, { params }) {
   try {
-    const { runId } = params;
+    const { runId } = await params;
     const numericId = parseInt(runId);
-
     if (isNaN(numericId)) {
       return NextResponse.json({ error: 'Invalid Run ID' }, { status: 400 });
     }
 
-    // 1. Fetch only the results for the given run session
+    // Fetch all test case results for this run, including all Judge0 fields
     const results = await prisma.submissionTestCaseResults.findMany({
-      where: {
-        submissionId: numericId,
-      },
+      where: { submissionId: numericId },
       select: {
-        id: true, // This is the submissionTestCaseResultsId
+        id: true,
         passed: true,
+        statusId: true,
+        statusDescription: true,
+        stdout: true,
+        stderr: true,
+        compileOutput: true,
+        message: true,
+        time: true,
+        memory: true,
       },
     });
 
+    // If no results, treat as already cleaned up
     if (!results || results.length === 0) {
-      // This can happen if the records were already deleted by a previous poll.
-      // It's not an error, it just means the job is done.
       return NextResponse.json({ status: 'Completed', results: [] }, { status: 200 });
     }
 
-    // 2. Check if all test cases have been processed (are no longer -1)
-    const allFinished = results.every((r) => r.passed !== -1);
+    // Prepare a user-friendly response for each test case
+    const testCaseResults = results.map(r => ({
+      id: r.id,
+      passed: r.passed,
+      statusId: r.statusId,
+      statusDescription: r.statusDescription,
+      stdout: r.stdout,
+      stderr: r.stderr,
+      compileOutput: r.compileOutput,
+      message: r.message,
+      time: r.time,
+      memory: r.memory,
+    }));
 
-    // 3. If the run is complete, return the final results and delete the records.
+    // If all test cases are finished, clean up and return results
+    const allFinished = results.length > 0 && results.every((r) => r.passed !== -1);
     if (allFinished) {
-      // IMPORTANT: After returning the results, we trigger a delete operation.
-      // This cleans up the temporary Submission and submissionTestCaseResults records.
-      // This assumes a cascading delete is set up in your Prisma schema.
-      // await prisma.submission.delete({
-      //   where: {
-      //     id: numericId,
-      //   },
-      // });
-      // console.log(`Cleaned up Run Session with ID: ${numericId}`);
-      
+      // Always clean up after completion
+      try {
+        await prisma.submission.delete({ where: { id: numericId } });
+        console.log(`[Run Poll] Cleaned up Run Session with ID: ${numericId}`);
+      } catch (cleanupErr) {
+        // If already deleted, ignore
+        console.warn(`[Run Poll] Cleanup warning for Run ID ${numericId}:`, cleanupErr.message);
+      }
       return NextResponse.json({
         status: 'Completed',
-        results: results,
+        results: testCaseResults,
       }, { status: 200 });
     }
 
-    // 4. If still processing, return the current status and results.
+    // If still processing, return partial results
     return NextResponse.json({
       status: 'Processing',
-      results: results,
+      results: testCaseResults,
     }, { status: 200 });
 
   } catch (error) {
-    console.error('Run Polling Error:', error);
+    console.error('[Run Poll] Error:', error);
     return NextResponse.json({ error: 'An internal server error occurred.' }, { status: 500 });
   }
 }

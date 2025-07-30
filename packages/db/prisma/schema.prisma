@@ -112,5 +112,5 @@ model submissionTestCaseResults {
   time              String?   // Judge0 time
   memory            Int?      // Judge0 memory
 
-  submission        Submission @relation(fields: [submissionId], references: [id])
+  submission        Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
 }
