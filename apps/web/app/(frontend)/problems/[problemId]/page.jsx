@@ -20,8 +20,8 @@ import axios from "axios";
 
 const LANGUAGES = [
   { name: "C++", id: 54 },
-  { name: "Java", id: 2 },
-  { name: "Python", id: 3 },
+  { name: "Java", id: 62 },
+  { name: "Python", id: 71 },
 ];
 
 function decodeBase64(str) {
