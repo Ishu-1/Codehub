@@ -37,6 +37,20 @@ export async function GET(req, context) {
     // Check if all test cases have been processed (i.e., are no longer -1)
     const allFinished = submission.results.every((r) => r.passed !== -1);
 
+    // Prepare detailed test case results for frontend
+    const testCaseResults = submission.results.map(r => ({
+      id: r.id,
+      passed: r.passed,
+      statusId: r.statusId,
+      statusDescription: r.statusDescription,
+      stdout: r.stdout,
+      stderr: r.stderr,
+      compileOutput: r.compileOutput,
+      message: r.message,
+      time: r.time,
+      memory: r.memory,
+    }));
+
     if (!allFinished) {
       const finishedCount = submission.results.filter(r => r.passed !== -1).length;
       return NextResponse.json({
@@ -44,36 +58,39 @@ export async function GET(req, context) {
         message: 'Submission is still being processed.',
         finishedCount,
         totalTestCases: submission.results.length,
+        testCaseResults,
       }, { status: 200 });
     }
 
-    // If all results are in, calculate the final status and update the DB if needed
-    if (submission.statusId === 2) { // Still "Processing"
-      const passedCount = submission.results.filter(r => r.passed === 1).length;
-      const allPassed = passedCount === submission.results.length;
-      const finalStatusId = allPassed ? 3 : 4; // 3: Accepted, 4: Wrong Answer
+    // If all results are in, aggregate the overall status
+    let finalStatusId = 3; // Default to Accepted
+    let finalStatusDescription = 'Accepted';
+    // If any test case is not Accepted, use the first non-accepted status as the overall status
+    const nonAccepted = submission.results.find(r => r.statusId !== 3);
+    if (nonAccepted) {
+      finalStatusId = nonAccepted.statusId;
+      finalStatusDescription = nonAccepted.statusDescription;
+    }
 
-      const finalSubmission = await prisma.submission.update({
+    // Update submission status if still processing
+    let finalSubmission = submission;
+    if (submission.statusId === 2) {
+      finalSubmission = await prisma.submission.update({
         where: { id: numericId },
         data: { statusId: finalStatusId },
         include: { results: true },
       });
-
-      console.log(`[GET] /api/submit/${submitId} - Finalized submission. Status: ${finalStatusId === 3 ? 'Accepted' : 'Wrong Answer'}`);
-      return NextResponse.json({
-        ...finalSubmission,
-        passedCount,
-        totalTestCases: submission.results.length,
-      }, { status: 200 });
-    } else {
-      // If the status is already updated, just return the final submission data
-      const passedCount = submission.results.filter(r => r.passed === 1).length;
-      return NextResponse.json({
-        ...submission,
-        passedCount,
-        totalTestCases: submission.results.length,
-      }, { status: 200 });
     }
+
+    const passedCount = submission.results.filter(r => r.passed === 1).length;
+    return NextResponse.json({
+      ...finalSubmission,
+      passedCount,
+      totalTestCases: submission.results.length,
+      statusId: finalStatusId,
+      statusDescription: finalStatusDescription,
+      testCaseResults,
+    }, { status: 200 });
 
   } catch (error) {
     console.error('[GET] /api/submit/[submitId] - Polling Error:', error);

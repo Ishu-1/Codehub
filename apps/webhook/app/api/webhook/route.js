@@ -9,13 +9,18 @@ import { z } from "zod";
 import prisma from "@repo/db/client";
 const router = express.Router();
 
-// Zod schema to validate Judge0 callback
+// Zod schema to validate Judge0 callback (all relevant fields)
 const judge0CallbackSchema = z.object({
   status: z.object({
     id: z.number(),
+    description: z.string(),
   }),
   stdout: z.string().nullable(),
   stderr: z.string().nullable(),
+  compile_output: z.string().nullable(),
+  message: z.string().nullable(),
+  time: z.string().nullable(),
+  memory: z.number().nullable(),
   token: z.string(),
 });
 
@@ -41,16 +46,38 @@ router.put("/", async (req, res) => {
       return res.status(400).json({ error: "Invalid callback body" });
     }
 
-    const { status } = parsed.data;
-    // 3 = Accepted, anything else = Wrong Answer
-    const passed = status.id === 3 ? 1 : 0;
+    const {
+      status,
+      stdout,
+      stderr,
+      compile_output,
+      message,
+      time,
+      memory
+    } = parsed.data;
+
+    // 3 = Accepted, anything else = not accepted
+    let passed = 0;
+    if (status.id === 3) passed = 1;
+    else if (status.id === 1 || status.id === 2) passed = -1; // In Queue/Processing
+    // else 0 for all other statuses
 
     await prisma.submissionTestCaseResults.update({
       where: { id: numericId },
-      data: { passed },
+      data: {
+        passed,
+        statusId: status.id,
+        statusDescription: status.description,
+        stdout,
+        stderr,
+        compileOutput: compile_output,
+        message,
+        time,
+        memory,
+      },
     });
 
-    console.log(`[Webhook] Processed: ID ${numericId}, Result: ${passed === 1 ? "Accepted" : "Wrong Answer"}`);
+    console.log(`[Webhook] Processed: ID ${numericId}, Status: ${status.id} (${status.description})`);
     return res.status(200).json({ message: "Webhook received successfully." });
   } catch (error) {
     console.error("[Webhook] Internal server error:", error);

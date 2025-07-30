@@ -91,12 +91,6 @@ model Submission {
   code           String
   token          String     // Judge0 token
   statusId       Int        // Judge0 status_id (1 = AC, 3 = CE, etc.)
-  stdout         String?
-  stderr         String?
-  compileOutput  String?
-  message        String?
-  time           String?    // Judge0 returns time as string, e.g., "0.123"
-  memory         Int?       // Memory in KB
   createdAt      DateTime   @default(now())
 
   user           User       @relation(fields: [userId], references: [id])
@@ -106,9 +100,17 @@ model Submission {
 }
 
 model submissionTestCaseResults {
-  id           Int       @id @default(autoincrement())
-  submissionId Int
-  passed Int // -1 for processing, 0 for failed, 1 for passed
+  id                Int       @id @default(autoincrement())
+  submissionId      Int
+  passed            Int // -1 for processing, 0 for failed, 1 for passed
+  statusId          Int?      // Judge0 status id
+  statusDescription String?   // Judge0 status description
+  stdout            String?   // Judge0 stdout (base64)
+  stderr            String?   // Judge0 stderr (base64)
+  compileOutput     String?   // Judge0 compile_output (base64)
+  message           String?   // Judge0 message (base64)
+  time              String?   // Judge0 time
+  memory            Int?      // Judge0 memory
 
-  submission   Submission @relation(fields: [submissionId], references: [id])
+  submission        Submission @relation(fields: [submissionId], references: [id])
 }

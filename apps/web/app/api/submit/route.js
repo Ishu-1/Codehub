@@ -105,6 +105,14 @@ export async function POST(req) {
         data: {
           submissionId: submission.id,
           passed: -1, // Processing
+          statusId: null,
+          statusDescription: null,
+          stdout: null,
+          stderr: null,
+          compileOutput: null,
+          message: null,
+          time: null,
+          memory: null,
         },
       });
       const callbackUrl = `${process.env.WEBHOOK_URL}?submissionTestCaseResultsId=${resultRecord.id}`;
