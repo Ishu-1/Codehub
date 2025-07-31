@@ -32,6 +32,8 @@ export async function GET(req, context) {
         inputFormat: true,
         outputFormat: true,
         constraints: true,
+        sampleInput: true,
+        sampleOutput: true,
         difficulty: true,
         boilerplates: {
           select: {

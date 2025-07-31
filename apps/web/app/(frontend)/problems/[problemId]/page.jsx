@@ -2,9 +2,9 @@
 /**
  * ProblemSolvePage - A modern, professional UI for solving coding problems.
  *
- * v5: Themed and fixed navbar overlap.
- * - Updated UI to match the "dim" slate and indigo theme.
- * - Added top padding to the main container to prevent overlap with the fixed navbar.
+ * v6: Redesigned problem description panel.
+ * - Created a more structured and readable layout for the description, examples, and constraints.
+ * - Added sample cases to the description panel.
  */
 
 import { useEffect, useState, useRef } from "react";
@@ -41,7 +41,6 @@ function TestCaseResult({ testCase, result }) {
   const statusInfo = result ? (statusMap[result.statusId] || { text: result.statusDescription, ...defaultStatus }) : null;
 
   return (
-    // ✨ THEME: Updated card styles
     <div className="bg-slate-800/50 rounded-lg border border-slate-700 mb-3">
       <button onClick={() => setIsOpen(!isOpen)} className="w-full flex justify-between items-center p-4 text-left">
         <div className="flex items-center gap-3">
@@ -58,7 +57,6 @@ function TestCaseResult({ testCase, result }) {
         <div className="p-5 border-t border-slate-700 bg-slate-900/50">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
             {testCase.input && <div>
-              {/* ✨ THEME: Updated text color */}
               <h4 className="text-indigo-400 font-semibold mb-2">Input</h4>
               <pre className="text-slate-300 whitespace-pre-wrap bg-slate-800 p-3 rounded">{testCase.input}</pre>
             </div>}
@@ -238,33 +236,54 @@ export default function ProblemSolvePage() {
   if (error) return <div className="flex items-center justify-center min-h-screen bg-slate-900 text-red-500">{error}</div>;
 
   return (
-    // ✨ FIX: Main container with padding-top to prevent navbar overlap
     <div className="h-screen bg-slate-900 text-slate-300 pt-24">
-      {/* The PanelGroup will now fill the remaining height */}
       <PanelGroup direction="horizontal" className="h-full">
         {/* Left Panel: Problem Description */}
         <Panel defaultSize={50} minSize={30}>
-          {/* ✨ THEME: Updated background and padding */}
           <div className="p-8 overflow-y-auto h-full bg-slate-900">
             <h1 className="text-3xl font-bold text-slate-50 mb-2">{problem.title}</h1>
             <div className="flex gap-2 mb-8">
-              {/* ✨ THEME: Updated difficulty badges */}
               <span className={`px-3 py-1 rounded-full text-xs font-bold ${problem.difficulty === "EASY" ? "bg-green-600/10 text-green-400" : problem.difficulty === "MEDIUM" ? "bg-yellow-600/10 text-yellow-400" : "bg-red-600/10 text-red-400"}`}>{problem.difficulty}</span>
             </div>
-            {/* ✨ THEME: Updated prose styles */}
-            <div className="prose prose-invert prose-p:text-slate-300 prose-p:leading-relaxed prose-headings:text-slate-50 prose-headings:mb-4 prose-headings:mt-8 prose-strong:text-indigo-400 prose-pre:bg-slate-800/70 prose-pre:p-4 prose-pre:rounded-md">
-                <p>{problem.description}</p>
-                <h3>Input Format</h3>
-                <p>{problem.inputFormat}</p>
-                <h3>Output Format</h3>
-                <p>{problem.outputFormat}</p>
-                <h3>Constraints</h3>
-                <pre>{problem.constraints}</pre>
+            
+            {/* ✨ UI CHANGE: New structured layout for problem description */}
+            <div className="space-y-8 text-slate-300">
+              <p className="leading-relaxed">{problem.description}</p>
+              
+              
+
+              {/* Input/Output Format */}
+              <div>
+                <h3 className="font-semibold text-slate-50 text-lg mb-2">Input Format</h3>
+                <p className="leading-relaxed">{problem.inputFormat}</p>
+              </div>
+              <div>
+                <h3 className="font-semibold text-slate-50 text-lg mb-2">Output Format</h3>
+                <p className="leading-relaxed">{problem.outputFormat}</p>
+              </div>
+
+              {/* Constraints */}
+              <div>
+                <h3 className="font-semibold text-slate-50 text-lg mb-2">Constraints</h3>
+                <ul className="list-disc list-inside space-y-1 pl-2">
+                  {problem.constraints.split('\n').map((line, index) => (
+                    <li key={index}><code className="text-sm">{line}</code></li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Sample Case */}
+              <div>
+                <h3 className="font-semibold text-slate-50 text-lg mb-2">Example</h3>
+                <div className="bg-slate-800/70 p-4 rounded-md space-y-2 text-sm font-mono">
+                  <p><strong className="text-slate-400">Input:</strong> {problem.sampleInput}</p>
+                  <p><strong className="text-slate-400">Output:</strong> {problem.sampleOutput}</p>
+                </div>
+              </div>
             </div>
           </div>
         </Panel>
         
-        {/* ✨ THEME: Updated resize handle */}
         <PanelResizeHandle className="w-2.5 bg-slate-800 data-[resize-handle-state=hover]:bg-indigo-500 data-[resize-handle-state=drag]:bg-indigo-500 transition-colors duration-200" />
 
         {/* Right Panel: Editor and Console */}
