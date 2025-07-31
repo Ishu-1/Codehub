@@ -1,5 +1,25 @@
-// script to convert problem structure to Java code
-// will return both boilerplate and full-boilerplate code
+
+/**
+ * toJava.js - Java Boilerplate Generator
+ *
+ * This script parses a problem structure and generates Java function/class boilerplate code
+ * and a main block with robust input/output handling for competitive programming.
+ *
+ * Features:
+ * - Parses function and class signatures from a structured description
+ * - Maps types using mapping.json for Java
+ * - Generates input code for all standard CP scenarios:
+ *   - Primitives, 1D and 2D lists (with n rows)
+ *   - Fallbacks for custom/complex types
+ * - Generates output code for primitives, 1D/2D lists
+ *
+ * Author: [Your Name]
+ * Date: 2025-07-31
+ */
+
+// =========================
+// Imports & Setup
+// =========================
 
 import fs from "fs";
 import path from "path";
@@ -8,10 +28,31 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+
 const mappingPath = path.join(__dirname, "mapping.json");
 const typeMapping = JSON.parse(fs.readFileSync(mappingPath, "utf-8"));
 
+function log(msg, ...args) {
+  // Simple logger for debugging
+  console.log(`[toJava] ${msg}`, ...args);
+}
+
+// =========================
+// Structure Parsing
+// =========================
+/**
+ * Parses a structured problem description into functions and classes.
+ * @param {string} structure - The problem structure string
+ * @returns {{functions: Array, classes: Array}}
+ */
+/**
+ * Parses a structured problem description into functions and classes.
+ * Logs each parsed function and class.
+ * @param {string} structure - The problem structure string
+ * @returns {{functions: Array, classes: Array}}
+ */
 function parseStructure(structure) {
+  log('Parsing structure...');
   const lines = structure.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
   const result = { functions: [], classes: [] };
   let i = 0;
@@ -34,6 +75,7 @@ function parseStructure(structure) {
         i++;
       }
       result.functions.push(func);
+      log('Parsed function:', func);
     } else if (lines[i].startsWith("Class:")) {
       const className = lines[i].split(":")[1].trim();
       i++;
@@ -62,23 +104,63 @@ function parseStructure(structure) {
         }
       }
       result.classes.push({ name: className, methods });
+      log('Parsed class:', className);
     } else {
       i++;
     }
   }
+  log('Parsing complete.');
   return result;
 }
 
+/**
+ * Maps a type string to its Java equivalent using mapping.json.
+ * @param {string} type
+ * @returns {string}
+ */
+// =========================
+// Type Mapping
+// =========================
+/**
+ * Maps a type string to its Java equivalent using mapping.json.
+ * @param {string} type
+ * @returns {string}
+ */
 function mapType(type) {
   return typeMapping[type]?.java || type;
 }
 
+/**
+ * Generates a Java function boilerplate.
+ * @param {object} func
+ * @returns {string}
+ */
+// =========================
+// Boilerplate Generation
+// =========================
+/**
+ * Generates a Java function boilerplate.
+ * @param {object} func
+ * @returns {string}
+ */
 function generateFunctionBoilerplate(func) {
+  log('Generating function boilerplate for', func.name);
   const args = func.inputs.map(inp => `${mapType(inp.type)} ${inp.name}`).join(", ");
   return `public static ${mapType(func.output)} ${func.name}(${args}) {\n    // Write your code here\n}`;
 }
 
+/**
+ * Generates a Java class boilerplate.
+ * @param {object} cls
+ * @returns {string}
+ */
+/**
+ * Generates a Java class boilerplate.
+ * @param {object} cls
+ * @returns {string}
+ */
 function generateClassBoilerplate(cls) {
+  log('Generating class boilerplate for', cls.name);
   let code = `public class ${cls.name} {`;
   cls.methods.forEach(method => {
     const args = method.inputs.map(inp => `${mapType(inp.type)} ${inp.name}`).join(", ");
@@ -88,7 +170,18 @@ function generateClassBoilerplate(cls) {
   return code;
 }
 
+/**
+ * Generates the combined boilerplate for all classes and functions.
+ * @param {object} parsed
+ * @returns {string}
+ */
+/**
+ * Generates the combined boilerplate for all classes and functions.
+ * @param {object} parsed
+ * @returns {string}
+ */
 function generateBoilerplate(parsed) {
+  log('Generating combined boilerplate...');
   let code = "";
   parsed.classes.forEach(cls => {
     code += generateClassBoilerplate(cls) + "\n\n";
@@ -99,7 +192,21 @@ function generateBoilerplate(parsed) {
   return code.trim();
 }
 
+/**
+ * Generates the full Java boilerplate including imports, main block, and I/O.
+ * @param {object} parsed
+ * @returns {string}
+ */
+// =========================
+// Full Boilerplate Generation (with main)
+// =========================
+/**
+ * Generates the full Java boilerplate including imports, main block, and I/O.
+ * @param {object} parsed
+ * @returns {string}
+ */
 function generateFullBoilerplate(parsed) {
+  log('Generating full boilerplate...');
   let imports = [
     "import java.util.*;",
     "import java.io.*;"
@@ -122,6 +229,7 @@ function generateFullBoilerplate(parsed) {
   const mainFunc = parsed.functions[0] || (parsed.classes[0]?.methods[0]);
 
   if (mainFunc) {
+    log('Generating input and output code for main function:', mainFunc.name);
     // Input parsing
     let knownSizes = {};
     mainFunc.inputs.forEach(inp => {
@@ -167,10 +275,29 @@ function generateFullBoilerplate(parsed) {
   code += "    }\n";
   code += "}\n";
 
+  log('Full boilerplate generated.');
   return code;
 }
 
+/**
+ * Generates Java input code for a given input variable.
+ * Handles primitives, 1D and 2D lists.
+ * @param {object} inp
+ * @param {object} knownSizes
+ * @returns {string}
+ */
+// =========================
+// Input Code Generation
+// =========================
+/**
+ * Generates Java input code for a given input variable.
+ * Handles primitives, 1D and 2D lists.
+ * @param {object} inp
+ * @param {object} knownSizes
+ * @returns {string}
+ */
 function generateInputJava(inp, knownSizes = {}) {
+  log('Generating input code for', inp.name, 'of type', inp.type);
   const type = mapType(inp.type);
   const name = inp.name;
 
@@ -227,6 +354,19 @@ function generateInputJava(inp, knownSizes = {}) {
   return `// TODO: Read input for ${name}`;
 }
 
+/**
+ * Capitalizes the type for Java Scanner method calls.
+ * @param {string} str
+ * @returns {string}
+ */
+// =========================
+// Utility
+// =========================
+/**
+ * Capitalizes the type for Java Scanner method calls.
+ * @param {string} str
+ * @returns {string}
+ */
 function capitalize(str) {
   if (str === "Integer") return "Int";
   if (str === "Double") return "Double";
@@ -238,9 +378,25 @@ function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+/**
+ * Main export: generates Java boilerplate and full code for a given structure.
+ * @param {string} structure
+ * @returns {{boilerplate: string, fullBoilerplate: string}}
+ */
+// =========================
+// Main Export
+// =========================
+/**
+ * Main export: generates Java boilerplate and full code for a given structure.
+ * Logs the process.
+ * @param {string} structure
+ * @returns {{boilerplate: string, fullBoilerplate: string}}
+ */
 export function generateJavaBoilerplates(structure) {
+  log('Generating Java boilerplates...');
   const parsed = parseStructure(structure);
   const boilerplate = generateBoilerplate(parsed);
   const fullBoilerplate = generateFullBoilerplate(parsed);
+  log('Boilerplate and full code generated.');
   return { boilerplate, fullBoilerplate };
 }
