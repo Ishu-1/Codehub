@@ -3,8 +3,8 @@
  * Entry point for the Boilerplate Generator service.
  * Sets up Express app, health check, and /generate route.
  *
- * Author: [Your Name]
- * Date: [Current Date]
+ * Author: Sujal Kyal
+ * Date: 21/07/2025
  */
 
 import express from "express";
