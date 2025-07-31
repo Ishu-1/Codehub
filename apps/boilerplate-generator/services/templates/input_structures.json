@@ -1,14 +1,16 @@
 [
-  "Function: sortWords\\nInput: int n, list<string> words\\nOutput: list<string>",
-  "Function: addNumbers\\nInput: int a, int b\\nOutput: int",
-  "Function: findMax\\nInput: list<int> arr\\nOutput: int",
-  "Function: reverseString\\nInput: string s\\nOutput: string",
-  "Function: isPalindrome\\nInput: string s\\nOutput: bool",
-  "Function: mergeArrays\\nInput: list<int> a, list<int> b\\nOutput: list<int>",
-  "Function: countVowels\\nInput: string s\\nOutput: int",
-  "Function: factorial\\nInput: int n\\nOutput: int",
-  "Function: fibonacci\\nInput: int n\\nOutput: int",
-  "Function: gcd\\nInput: int a, int b\\nOutput: int",
-  "Function: toUpperCase\\nInput: string s\\nOutput: string",
-  "Function: filterEven\\nInput: list<int> arr\\nOutput: list<int>"
+  "Function: noInputFunction\nOutput: int",
+  "Function: add\nInput: int a, int b\nOutput: int",
+  "Function: concatStrings\nInput: string a, string b\nOutput: string",
+  "Function: isEven\nInput: int n\nOutput: bool",
+  "Function: sumList\nInput: int n, list<int> arr\nOutput: int",
+  "Function: flattenMatrix\nInput: int n, int m, list<list<int>> matrix\nOutput: list<int>",
+  "Function: getFirstChar\nInput: string s\nOutput: char",
+  "Function: countTrues\nInput: int n, list<bool> arr\nOutput: int",
+  "Function: mergeStringLists\nInput: int n, list<string> a, int m, list<string> b\nOutput: list<string>",
+  "Function: buildMap\nInput: int n, list<string> keys, int m, list<int> values\nOutput: dict<string,int>",
+  "Function: getTuple\nInput: int a, int b\nOutput: tuple<int,int>",
+  "Function: processTuples\nInput: int n, list<tuple<int,int>> pairs\nOutput: list<tuple<int,int>>",
+  "Function: getStringIntTuple\nInput: string s, int n\nOutput: tuple<string,int>",
+  "Function: processStringMatrix\nInput: int n, int m, list<list<string>> matrix\nOutput: list<string>"
 ]
