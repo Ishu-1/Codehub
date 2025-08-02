@@ -7,7 +7,7 @@
     },
     "java": {
       "boilerplate": "public static int noInputFunction() {\n    // Write your code here\n}",
-      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static int noInputFunction() {\n        // Write your code here\n        return null;\n    }\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n        System.out.println(noInputFunction());\n    }\n}\n"
+      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\npublic static int noInputFunction() {\n    // Write your code here\n}\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n        System.out.println(noInputFunction());\n    }\n}\n"
     },
     "python": {
       "boilerplate": "def noInputFunction():\n    # Write your code here\n    pass",
@@ -22,7 +22,7 @@
     },
     "java": {
       "boilerplate": "public static int add(int a, int b) {\n    // Write your code here\n}",
-      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static int add(int a, int b) {\n        // Write your code here\n        return null;\n    }\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n                int a = sc.nextInt();\n                int b = sc.nextInt();\n        System.out.println(add(a, b));\n    }\n}\n"
+      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\npublic static int add(int a, int b) {\n    // Write your code here\n}\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n        int a = sc.nextInt();\n        int b = sc.nextInt();\n        System.out.println(add(a, b));\n    }\n}\n"
     },
     "python": {
       "boilerplate": "def add(a, b):\n    # Write your code here\n    pass",
@@ -37,7 +37,7 @@
     },
     "java": {
       "boilerplate": "public static String concatStrings(String a, String b) {\n    // Write your code here\n}",
-      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static String concatStrings(String a, String b) {\n        // Write your code here\n        return null;\n    }\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n                String a = sc.next();\n                String b = sc.next();\n        System.out.println(concatStrings(a, b));\n    }\n}\n"
+      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\npublic static String concatStrings(String a, String b) {\n    // Write your code here\n}\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n        String a = sc.next();\n        String b = sc.next();\n        System.out.println(concatStrings(a, b));\n    }\n}\n"
     },
     "python": {
       "boilerplate": "def concatStrings(a, b):\n    # Write your code here\n    pass",
@@ -52,7 +52,7 @@
     },
     "java": {
       "boilerplate": "public static boolean isEven(int n) {\n    // Write your code here\n}",
-      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static boolean isEven(int n) {\n        // Write your code here\n        return null;\n    }\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n                int n = sc.nextInt();\n        System.out.println(isEven(n));\n    }\n}\n"
+      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\npublic static boolean isEven(int n) {\n    // Write your code here\n}\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        System.out.println(isEven(n));\n    }\n}\n"
     },
     "python": {
       "boilerplate": "def isEven(n):\n    # Write your code here\n    pass",
@@ -67,7 +67,7 @@
     },
     "java": {
       "boilerplate": "public static int sumList(int n, List<Integer> arr) {\n    // Write your code here\n}",
-      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static int sumList(int n, List<Integer> arr) {\n        // Write your code here\n        return null;\n    }\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n                int n = sc.nextInt();\n                List<Integer> arr = new ArrayList<>();\n        for (int i = 0; i < n; i++) {\n            arr.add(sc.nextInt());\n        }\n        System.out.println(sumList(n, arr));\n    }\n}\n"
+      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\npublic static int sumList(int n, List<Integer> arr) {\n    // Write your code here\n}\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        List<Integer> arr = new ArrayList<>();\n        for (int i = 0; i < n; i++) {\n            arr.add(sc.nextInt());\n        }\n        System.out.println(sumList(n, arr));\n    }\n}\n"
     },
     "python": {
       "boilerplate": "def sumList(n, arr):\n    # Write your code here\n    pass",
@@ -82,7 +82,7 @@
     },
     "java": {
       "boilerplate": "public static List<Integer> flattenMatrix(int n, int m, List<List<Integer>> matrix) {\n    // Write your code here\n}",
-      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static List<Integer> flattenMatrix(int n, int m, List<List<Integer>> matrix) {\n        // Write your code here\n        return null;\n    }\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n                int n = sc.nextInt();\n                int m = sc.nextInt();\n                List<List<Integer>> matrix = new ArrayList<>();\n        for (int i = 0; i < n; i++) {\n            List<Integer> row = new ArrayList<>();\n            for (int j = 0; j < m; j++) {\n                row.add(sc.nextInt());\n            }\n            matrix.add(row);\n        }\n        var result = flattenMatrix(n, m, matrix);\n        for (var val : result) {\n            System.out.print(val + \" \");\n        }\n        System.out.println();\n    }\n}\n"
+      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\npublic static List<Integer> flattenMatrix(int n, int m, List<List<Integer>> matrix) {\n    // Write your code here\n}\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int m = sc.nextInt();\n        List<List<Integer>> matrix = new ArrayList<>();\n        for (int i = 0; i < n; i++) {\n            List<Integer> row = new ArrayList<>();\n            for (int j = 0; j < m; j++) {\n                row.add(sc.nextInt());\n            }\n            matrix.add(row);\n        }\n        var result = flattenMatrix(n, m, matrix);\n        for (var val : result) {\n            System.out.print(val + \" \");\n        }\n        System.out.println();\n    }\n}\n"
     },
     "python": {
       "boilerplate": "def flattenMatrix(n, m, matrix):\n    # Write your code here\n    pass",
@@ -97,7 +97,7 @@
     },
     "java": {
       "boilerplate": "public static char getFirstChar(String s) {\n    // Write your code here\n}",
-      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static char getFirstChar(String s) {\n        // Write your code here\n        return null;\n    }\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n                String s = sc.next();\n        System.out.println(getFirstChar(s));\n    }\n}\n"
+      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\npublic static char getFirstChar(String s) {\n    // Write your code here\n}\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.next();\n        System.out.println(getFirstChar(s));\n    }\n}\n"
     },
     "python": {
       "boilerplate": "def getFirstChar(s):\n    # Write your code here\n    pass",
@@ -112,7 +112,7 @@
     },
     "java": {
       "boilerplate": "public static int countTrues(int n, List<Boolean> arr) {\n    // Write your code here\n}",
-      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static int countTrues(int n, List<Boolean> arr) {\n        // Write your code here\n        return null;\n    }\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n                int n = sc.nextInt();\n                List<Boolean> arr = new ArrayList<>();\n        for (int i = 0; i < n; i++) {\n            arr.add(sc.nextBoolean());\n        }\n        System.out.println(countTrues(n, arr));\n    }\n}\n"
+      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\npublic static int countTrues(int n, List<Boolean> arr) {\n    // Write your code here\n}\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        List<Boolean> arr = new ArrayList<>();\n        for (int i = 0; i < n; i++) {\n            arr.add(sc.nextBoolean());\n        }\n        System.out.println(countTrues(n, arr));\n    }\n}\n"
     },
     "python": {
       "boilerplate": "def countTrues(n, arr):\n    # Write your code here\n    pass",
@@ -127,7 +127,7 @@
     },
     "java": {
       "boilerplate": "public static List<String> mergeStringLists(int n, List<String> a, int m, List<String> b) {\n    // Write your code here\n}",
-      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static List<String> mergeStringLists(int n, List<String> a, int m, List<String> b) {\n        // Write your code here\n        return null;\n    }\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n                int n = sc.nextInt();\n                List<String> a = new ArrayList<>();\n        for (int i = 0; i < n; i++) {\n            a.add(sc.next());\n        }\n                int m = sc.nextInt();\n                List<String> b = new ArrayList<>();\n        for (int i = 0; i < m; i++) {\n            b.add(sc.next());\n        }\n        var result = mergeStringLists(n, a, m, b);\n        for (var val : result) {\n            System.out.print(val + \" \");\n        }\n        System.out.println();\n    }\n}\n"
+      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\npublic static List<String> mergeStringLists(int n, List<String> a, int m, List<String> b) {\n    // Write your code here\n}\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        List<String> a = new ArrayList<>();\n        for (int i = 0; i < n; i++) {\n            a.add(sc.next());\n        }\n        int m = sc.nextInt();\n        List<String> b = new ArrayList<>();\n        for (int i = 0; i < m; i++) {\n            b.add(sc.next());\n        }\n        var result = mergeStringLists(n, a, m, b);\n        for (var val : result) {\n            System.out.print(val + \" \");\n        }\n        System.out.println();\n    }\n}\n"
     },
     "python": {
       "boilerplate": "def mergeStringLists(n, a, m, b):\n    # Write your code here\n    pass",
@@ -142,7 +142,7 @@
     },
     "java": {
       "boilerplate": "public static Map<String, Integer> buildMap(int n, List<String> keys, int m, List<Integer> values) {\n    // Write your code here\n}",
-      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static Map<String, Integer> buildMap(int n, List<String> keys, int m, List<Integer> values) {\n        // Write your code here\n        return null;\n    }\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n                int n = sc.nextInt();\n                List<String> keys = new ArrayList<>();\n        for (int i = 0; i < n; i++) {\n            keys.add(sc.next());\n        }\n                int m = sc.nextInt();\n                List<Integer> values = new ArrayList<>();\n        for (int i = 0; i < m; i++) {\n            values.add(sc.nextInt());\n        }\n        System.out.println(buildMap(n, keys, m, values));\n    }\n}\n"
+      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\npublic static Map<String, Integer> buildMap(int n, List<String> keys, int m, List<Integer> values) {\n    // Write your code here\n}\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        List<String> keys = new ArrayList<>();\n        for (int i = 0; i < n; i++) {\n            keys.add(sc.next());\n        }\n        int m = sc.nextInt();\n        List<Integer> values = new ArrayList<>();\n        for (int i = 0; i < m; i++) {\n            values.add(sc.nextInt());\n        }\n        System.out.println(buildMap(n, keys, m, values));\n    }\n}\n"
     },
     "python": {
       "boilerplate": "def buildMap(n, keys, m, values):\n    # Write your code here\n    pass",
@@ -157,7 +157,7 @@
     },
     "java": {
       "boilerplate": "public static int[] getTuple(int a, int b) {\n    // Write your code here\n}",
-      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static int[] getTuple(int a, int b) {\n        // Write your code here\n        return null;\n    }\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n                int a = sc.nextInt();\n                int b = sc.nextInt();\n        var result = getTuple(a, b);\n        for (var val : result) {\n            System.out.print(val + \" \");\n        }\n        System.out.println();\n    }\n}\n"
+      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\npublic static int[] getTuple(int a, int b) {\n    // Write your code here\n}\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n        int a = sc.nextInt();\n        int b = sc.nextInt();\n        var result = getTuple(a, b);\n        for (var val : result) {\n            System.out.print(val + \" \");\n        }\n        System.out.println();\n    }\n}\n"
     },
     "python": {
       "boilerplate": "def getTuple(a, b):\n    # Write your code here\n    pass",
@@ -172,7 +172,7 @@
     },
     "java": {
       "boilerplate": "public static List<int[]> processTuples(int n, list<tuple<int , int>> pairs) {\n    // Write your code here\n}",
-      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static List<int[]> processTuples(int n, list<tuple<int , int>> pairs) {\n        // Write your code here\n        return null;\n    }\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n                int n = sc.nextInt();\n        // TODO: Read input for \n        // TODO: Read input for pairs\n        var result = processTuples(n, , pairs);\n        for (var val : result) {\n            System.out.print(val + \" \");\n        }\n        System.out.println();\n    }\n}\n"
+      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\npublic static List<int[]> processTuples(int n, list<tuple<int , int>> pairs) {\n    // Write your code here\n}\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        // TODO: Read input for \n        // TODO: Read input for pairs\n        var result = processTuples(n, , pairs);\n        for (var val : result) {\n            System.out.print(val + \" \");\n        }\n        System.out.println();\n    }\n}\n"
     },
     "python": {
       "boilerplate": "def processTuples(n, , pairs):\n    # Write your code here\n    pass",
@@ -187,7 +187,7 @@
     },
     "java": {
       "boilerplate": "public static Object[] getStringIntTuple(String s, int n) {\n    // Write your code here\n}",
-      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static Object[] getStringIntTuple(String s, int n) {\n        // Write your code here\n        return null;\n    }\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n                String s = sc.next();\n                int n = sc.nextInt();\n        var result = getStringIntTuple(s, n);\n        for (var val : result) {\n            System.out.print(val + \" \");\n        }\n        System.out.println();\n    }\n}\n"
+      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\npublic static Object[] getStringIntTuple(String s, int n) {\n    // Write your code here\n}\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.next();\n        int n = sc.nextInt();\n        var result = getStringIntTuple(s, n);\n        for (var val : result) {\n            System.out.print(val + \" \");\n        }\n        System.out.println();\n    }\n}\n"
     },
     "python": {
       "boilerplate": "def getStringIntTuple(s, n):\n    # Write your code here\n    pass",
@@ -202,7 +202,7 @@
     },
     "java": {
       "boilerplate": "public static List<String> processStringMatrix(int n, int m, List<List<String>> matrix) {\n    // Write your code here\n}",
-      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static List<String> processStringMatrix(int n, int m, List<List<String>> matrix) {\n        // Write your code here\n        return null;\n    }\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n                int n = sc.nextInt();\n                int m = sc.nextInt();\n                List<List<String>> matrix = new ArrayList<>();\n        for (int i = 0; i < n; i++) {\n            List<String> row = new ArrayList<>();\n            for (int j = 0; j < m; j++) {\n                row.add(sc.next());\n            }\n            matrix.add(row);\n        }\n        var result = processStringMatrix(n, m, matrix);\n        for (var val : result) {\n            System.out.print(val + \" \");\n        }\n        System.out.println();\n    }\n}\n"
+      "fullBoilerplate": "import java.util.*;\nimport java.io.*;\n\npublic class Main {\npublic static List<String> processStringMatrix(int n, int m, List<List<String>> matrix) {\n    // Write your code here\n}\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int m = sc.nextInt();\n        List<List<String>> matrix = new ArrayList<>();\n        for (int i = 0; i < n; i++) {\n            List<String> row = new ArrayList<>();\n            for (int j = 0; j < m; j++) {\n                row.add(sc.next());\n            }\n            matrix.add(row);\n        }\n        var result = processStringMatrix(n, m, matrix);\n        for (var val : result) {\n            System.out.print(val + \" \");\n        }\n        System.out.println();\n    }\n}\n"
     },
     "python": {
       "boilerplate": "def processStringMatrix(n, m, matrix):\n    # Write your code here\n    pass",
