@@ -16,9 +16,9 @@ import { z } from 'zod';
 import axios from 'axios';
 import prisma from "@repo/db/client";
 import { downloadFile } from "@repo/s3-client/client";
+import { getAuth, clerkClient } from '@clerk/nextjs/server'
 
 const runSchema = z.object({
-  userId: z.string(),
   problemSlug: z.string(),
   languageId: z.number(),
   code: z.string(),
@@ -44,6 +44,11 @@ async function getTestCasesFromS3(slug) {
 
 export async function POST(req) {
   try {
+
+    const { userId } = getAuth(req)
+  if (!userId) {
+    return res.status(401).json({ error: 'Unauthorized' })
+  }
     console.log("[Run API] Received POST /api/run request");
     // --- Parse and validate request ---
     const body = await req.json();
@@ -53,7 +58,7 @@ export async function POST(req) {
       console.warn("[Run API] Invalid request body:", parsedBody.error);
       return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
     }
-    const { userId, problemSlug, languageId, code } = parsedBody.data;
+    const {  problemSlug, languageId, code } = parsedBody.data;
 
     // --- Fetch problem and boilerplate ---
     console.log(`[Run API] Fetching problem for slug: ${problemSlug}`);

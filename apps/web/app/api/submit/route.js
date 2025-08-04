@@ -16,10 +16,9 @@ import { z } from "zod";
 import prisma from "@repo/db/client";
 import axios from "axios";
 import { downloadFile } from "@repo/s3-client/client";
-
+import {auth } from '@clerk/nextjs/server'
 // Zod schema for validating submission payload
 const submissionSchema = z.object({
-  userId: z.string(),
   problemSlug: z.string(),
   languageId: z.number(),
   code: z.string(),
@@ -54,13 +53,19 @@ async function getTestCasesFromS3(slug) {
  */
 export async function POST(req) {
   try {
+
+      const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    
     // Validate request body
     const body = await req.json();
     const parsedBody = submissionSchema.safeParse(body);
     if (!parsedBody.success) {
       return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
     }
-    const { userId, problemSlug, languageId, code } = parsedBody.data;
+    const {  problemSlug, languageId, code } = parsedBody.data;
 
     // Fetch problem
     const problem = await prisma.problem.findUnique({ where: { slug: problemSlug } });

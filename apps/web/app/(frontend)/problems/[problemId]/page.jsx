@@ -201,7 +201,7 @@ export default function ProblemSolvePage() {
     try {
         const langBoiler = problem.boilerplates.find(b => b.language.id === selectedLang.id);
         const res = await axios.post("/api/run", { 
-            userId: "1", 
+          //  userId: "user_30e917Pr2xYTOEf2JV5lQe7R7NC", 
             problemSlug: problemId, 
             languageId: langBoiler.language.id, 
             code 
@@ -221,7 +221,7 @@ export default function ProblemSolvePage() {
     try {
         const langBoiler = problem.boilerplates.find(b => b.language.id === selectedLang.id);
         const res = await axios.post("/api/submit", { 
-            userId: "1", 
+           // userId: "1", 
             problemSlug: problemId, 
             languageId: langBoiler.language.id, 
             code 
