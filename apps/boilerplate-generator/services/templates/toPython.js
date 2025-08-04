@@ -170,42 +170,68 @@ function generateBoilerplate(parsed) {
 function generateInputsBlock(inputs) {
   if (inputs.length === 0) return "";
   const primitives = ["int", "str", "bool", "float"];
-  const mappedTypes = inputs.map(inp => mapType(inp.type));
-  const allPrimitive = mappedTypes.every(t => primitives.includes(t));
-  const allSameType = new Set(mappedTypes).size === 1;
-  // Case 1: all primitive, same type, >1
-  if (allPrimitive && allSameType && inputs.length > 1) {
-    log('Generating input for multiple primitives of same type:', mappedTypes[0]);
-    return `    ${inputs.map(i => i.name).join(", ")} = map(${mappedTypes[0]}, input().split())`;
-  }
-  // Case 2: all primitive, mixed types, >1 (e.g. int a, str b)
-  if (allPrimitive && !allSameType && inputs.length > 1) {
-    log('Generating input for multiple primitives of mixed types:', mappedTypes);
-    let names = inputs.map(i => i.name).join(", ");
-    let casts = inputs.map((inp) => `    ${inp.name} = ${mapType(inp.type)}(${inp.name})`).join("\n");
-    return `    ${names} = input().split()\n${casts}`;
-  }
-  // Fallback: one per line
-  log('Generating fallback input code for each input.');
-  return inputs.map(inp => {
-    const type = mapType(inp.type);
-    const name = inp.name;
+  let primitiveVars = [];
+  let primitiveTypes = [];
+  let arrayInfos = [];
+  for (let i = 0; i < inputs.length; i++) {
+    const type = mapType(inputs[i].type);
     if (primitives.includes(type)) {
-      return `    ${name} = ${type}(input())`;
+      primitiveVars.push(inputs[i].name);
+      primitiveTypes.push(type);
+    } else if (type.startsWith("List[")) {
+      arrayInfos.push({ idx: i, type, name: inputs[i].name });
     }
+  }
+  let codeLines = [];
+  // Read all primitives in one line, using correct type
+  if (primitiveVars.length > 0) {
+    let typeMap = { int: "int", str: "str", float: "float", bool: "bool" };
+    let mapTypeStr = primitiveTypes.every(t => t === primitiveTypes[0]) ? typeMap[primitiveTypes[0]] : "str";
+    if (primitiveTypes.every(t => t === "int")) mapTypeStr = "int";
+    else if (primitiveTypes.every(t => t === "float")) mapTypeStr = "float";
+    else if (primitiveTypes.every(t => t === "bool")) mapTypeStr = "bool";
+    else if (primitiveTypes.every(t => t === "str")) mapTypeStr = "str";
+    codeLines.push(`    ${primitiveVars.join(", ")} = map(${mapTypeStr}, input().split())`);
+  }
+  // For each array, use last primitive(s) before it as size(s)
+  for (let info of arrayInfos) {
+    const { idx, type, name } = info;
     if (type.startsWith("List[List[")) {
-      // Try to parse 2D list: expect n, m defined before
-      return `    ${name} = [list(map(int, input().split())) for _ in range(n)]  # Assumes n rows`;
-    }
-    if (type.startsWith("List[")) {
-      const inner = type.match(/List\[(.*?)\]/)?.[1];
-      if (primitives.includes(inner)) {
-        return `    ${name} = list(map(${inner}, input().split()))`;
+      // 2D array: last two primitives before this array
+      let dimVars = [];
+      let found = 0;
+      for (let j = idx - 1; j >= 0 && found < 2; j--) {
+        if (primitives.includes(mapType(inputs[j].type))) {
+          dimVars.unshift(inputs[j].name);
+          found++;
+        }
       }
-      return `    # TODO: Parse ${name} as ${type}`;
+      const innerTypeMatch = type.match(/List\[List\[(.*?)\]\]/);
+      let innerType = innerTypeMatch ? innerTypeMatch[1] : "int";
+      if (["string", "str"].includes(innerType)) innerType = "str";
+      if (["integer", "int"].includes(innerType)) innerType = "int";
+      if (["float"].includes(innerType)) innerType = "float";
+      if (["bool", "boolean"].includes(innerType)) innerType = "bool";
+      codeLines.push(`    ${name} = [list(map(${innerType}, input().split())) for _ in range(${dimVars[0]})]  # Assumes ${dimVars[0]} rows`);
+    } else if (type.startsWith("List[")) {
+      // 1D array: last primitive before this array
+      let dimVar = null;
+      for (let j = idx - 1; j >= 0; j--) {
+        if (primitives.includes(mapType(inputs[j].type))) {
+          dimVar = inputs[j].name;
+          break;
+        }
+      }
+      const innerTypeMatch = type.match(/List\[(.*?)\]/);
+      let innerType = innerTypeMatch ? innerTypeMatch[1] : "int";
+      if (["string", "str"].includes(innerType)) innerType = "str";
+      if (["integer", "int"].includes(innerType)) innerType = "int";
+      if (["float"].includes(innerType)) innerType = "float";
+      if (["bool", "boolean"].includes(innerType)) innerType = "bool";
+      codeLines.push(`    ${name} = list(map(${innerType}, input().split()))`);
     }
-    return `    ${name} = input()  # TODO: Parse as ${type}`;
-  }).join("\n");
+  }
+  return codeLines.join("\n");
 }
 
 /**
