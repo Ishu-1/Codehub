@@ -6,11 +6,7 @@
   "Function: sumList\nInput: int n, list<int> arr\nOutput: int",
   "Function: flattenMatrix\nInput: int n, int m, list<list<int>> matrix\nOutput: list<int>",
   "Function: getFirstChar\nInput: string s\nOutput: char",
-  "Function: countTrues\nInput: int n, list<bool> arr\nOutput: int",
   "Function: mergeStringLists\nInput: int n, list<string> a, int m, list<string> b\nOutput: list<string>",
-  "Function: buildMap\nInput: int n, list<string> keys, int m, list<int> values\nOutput: dict<string,int>",
-  "Function: getTuple\nInput: int a, int b\nOutput: tuple<int,int>",
-  "Function: processTuples\nInput: int n, list<tuple<int,int>> pairs\nOutput: list<tuple<int,int>>",
-  "Function: getStringIntTuple\nInput: string s, int n\nOutput: tuple<string,int>",
-  "Function: processStringMatrix\nInput: int n, int m, list<list<string>> matrix\nOutput: list<string>"
+  "Function: processStringMatrix\nInput: int n, int m, list<list<string>> matrix\nOutput: list<string>",
+  "Function: processQueries\nInput: int n, list<int> arr, int q, int m, list<list<int>> queries\nOutput: list<int>"
 ]
