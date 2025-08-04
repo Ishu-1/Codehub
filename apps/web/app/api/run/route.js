@@ -17,7 +17,7 @@ import axios from 'axios';
 import prisma from "@repo/db/client";
 import { downloadFile } from "@repo/s3-client/client";
 import { getAuth, clerkClient } from '@clerk/nextjs/server'
-
+import {getAvailableApiKey} from "../../../utils/rapidApiKeyManager"
 const runSchema = z.object({
   problemSlug: z.string(),
   languageId: z.number(),
@@ -130,6 +130,8 @@ export async function POST(req) {
       });
       const callbackUrl = `${process.env.WEBHOOK_URL}?submissionTestCaseResultsId=${resultRecord.id}`;
       console.log(`[Run API] Dispatching to Judge0 for submissionTestCaseResultsId: ${resultRecord.id}`);
+      const { key, host } = getAvailableApiKey();
+      console.log(`[POST] /api/submit - Using Judge0 API key: ${key}`);
       judge0Promises.push(
         axios.post(
           `${process.env.JUDGE0_URL}/submissions?base64_encoded=false&wait=false`,
@@ -143,8 +145,8 @@ export async function POST(req) {
           {
             headers: {
               "Content-Type": "application/json",
-              "x-rapidapi-host": process.env.JUDGE0_HOST,
-              "x-rapidapi-key": process.env.JUDGE0_KEY,
+              "x-rapidapi-host": host,
+              "x-rapidapi-key": key,
             },
           }
         )

@@ -36,7 +36,7 @@
   },
   "string": {
     "python": "str",
-    "cpp": "std::string",
+    "cpp": "string",
     "java": "String"
   },
   "list<int>": {
@@ -71,7 +71,7 @@
   },
   "list<string>": {
     "python": "List[str]",
-    "cpp": "vector<std::string>",
+    "cpp": "vector<string>",
     "java": "List<String>"
   },
   "dict<string,int>": {
@@ -106,7 +106,7 @@
   },
   "list<list<string>>": {
     "python": "List[List[str]]",
-    "cpp": "vector<vector<std::string>>",
+    "cpp": "vector<vector<string>>",
     "java": "List<List<String>>"
   },
   "list<tuple<int,int>>": {
