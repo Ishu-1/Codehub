@@ -16,6 +16,7 @@ import { z } from "zod";
 import prisma from "@repo/db/client";
 import axios from "axios";
 import { downloadFile } from "@repo/s3-client/client";
+import {getAvailableApiKey} from "../../../utils/rapidApiKeyManager"
 
 // Zod schema for validating submission payload
 const submissionSchema = z.object({
@@ -117,7 +118,8 @@ export async function POST(req) {
       });
       const callbackUrl = `${process.env.WEBHOOK_URL}?submissionTestCaseResultsId=${resultRecord.id}`;
       console.log(`[POST] /api/submit - Dispatching to Judge0 with callback: ${callbackUrl}`);
-
+      const { key, host } = getAvailableApiKey();
+      console.log(`[POST] /api/submit - Using Judge0 API key: ${key}`);
       return axios.post(
         `${process.env.JUDGE0_URL}/submissions?base64_encoded=false&wait=false`,
         {
@@ -130,8 +132,8 @@ export async function POST(req) {
         {
           headers: {
             "Content-Type": "application/json",
-            "x-rapidapi-host": process.env.JUDGE0_HOST,
-            "x-rapidapi-key": process.env.JUDGE0_KEY,
+            "x-rapidapi-host": host,
+            "x-rapidapi-key": key,
           },
         }
       );
