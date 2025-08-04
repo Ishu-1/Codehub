@@ -11,7 +11,7 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.25.4",
+    "@clerk/nextjs": "^6.28.0",
     "@repo/db": "*",
     "@repo/s3-client": "*",
     "axios": "^1.11.0",
@@ -22,7 +22,6 @@
     "react-toastify": "^11.0.5",
     "svix": "^1.69.0",
     "tailwindcss": "^4.1.11",
-
     "zod": "^4.0.5"
   },
   "devDependencies": {
